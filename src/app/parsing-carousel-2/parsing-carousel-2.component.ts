@@ -8,16 +8,9 @@ import { ParsingDocumentsState } from './type';
   styleUrls: ['./parsing-carousel-2.component.sass']
 })
 export class ParsingCarousel2Component implements OnInit {
-
-  title = 'carousel';
+  
   isLoadingDocument = false
-
   sections: NodeList | undefined
-
-
-  images: { [key: number]: any } = {}
-  current = 0
-
   state: ParsingDocumentsState = new ParsingDocumentsState()
 
   constructor(private pdfLibService: PDFLibService) { }
@@ -29,7 +22,7 @@ export class ParsingCarousel2Component implements OnInit {
     const index = Number(event?.target.value)
     if (this.state.fileRanges[index]) {
       this.state.moveSlotsToFileIndex(Number(event?.target.value))
-      this.renderDocument(false)
+      this.renderDocument()
     }
   }
 
@@ -42,8 +35,6 @@ export class ParsingCarousel2Component implements OnInit {
     this.isLoadingDocument = true
 
     this.pdfLibService.uploadDocuments(filesTemp).then(files => {
-
-      this.state.selectedIndex = 0 //this.state.files.length      
       this.state.resetSlots(files)
       this.renderDocument()
 
@@ -54,24 +45,17 @@ export class ParsingCarousel2Component implements OnInit {
   }
 
   go(action: 'prev' | 'next') {
-    if (action === 'prev' && this.state.slots[1] == -1 || action === 'next' && this.state.slots[3] == -1) {
-      console.log('Nothing')
+    if (action === 'prev' && this.state.slots[1] == -1 || action === 'next' && this.state.slots[3] == -1) {      
       return
     }
     this.state.moveSlots(action)
-    this.renderDocument(false)
+    this.renderDocument()
   }
 
 
 
 
-  renderDocument(initial = true) {
-    if (initial) {
-      const pages = Math.min(this.state.numPages, 3)
-      for (let i = 0; i < pages; i++) {
-        this.state.slots[i + 2] = i
-      }
-    }
+  renderDocument() {
     this.state.slots.forEach((v, i) => {
       this.renderImage(i, v)
     })
@@ -119,8 +103,7 @@ export class ParsingCarousel2Component implements OnInit {
       }
       return new Promise((resolve, rject) => {
         const renderTask = page.render(renderContext)
-        renderTask.promise.then(() => {
-          //this.state.currentDocument.pages[i].instance = div
+        renderTask.promise.then(() => {          
           imageCreator.instance = div
           this.state.getImage(i).instance = div
           resolve(imageCreator.instance)

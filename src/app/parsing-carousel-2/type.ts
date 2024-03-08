@@ -23,8 +23,7 @@ export class ParsingDocumentsState {
   }
 
   resetSlots(files: ParsingDocumentsFile[]) {
-    this.selectedIndex = 0
-    this.slots = [-1, -1, -1, -1, -1]
+
     this.files.push(...files)
     this.numPages = this.files.reduce((prev, { pages }) => prev + pages.length, 0)
     this.fileRanges = {}
@@ -33,6 +32,7 @@ export class ParsingDocumentsState {
       this.fileRanges[i] = { file: i, from: acum, to: acum + pages.length, main: acum }
       acum += pages.length
     })
+    this.moveSlotsToFileIndex(0)
   }
 
   moveSlots(direction: 'prev' | 'next') {
