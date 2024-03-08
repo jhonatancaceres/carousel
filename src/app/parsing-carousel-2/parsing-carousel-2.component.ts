@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, QueryList, Renderer2, ViewChildren } from '@angular/core';
 import { PDFLibService } from './pdf-lib.service';
 import { ParsingDocumentsState } from './type';
 
@@ -9,13 +9,20 @@ import { ParsingDocumentsState } from './type';
 })
 export class ParsingCarousel2Component implements OnInit {
   
+
+  @ViewChildren('page', { read: ElementRef }) pagesEl!: QueryList<ElementRef>
+
   isLoadingDocument = false
   sections: NodeList | undefined
   state: ParsingDocumentsState = new ParsingDocumentsState()
 
-  constructor(private pdfLibService: PDFLibService) { }
+  constructor(
+    private pdfLibService: PDFLibService,
+    private renderer: Renderer2,
+  ) { }
+
   ngOnInit(): void {
-    this.sections = document.querySelectorAll('.pages .page')
+    this.sections = document.querySelectorAll('.pages>div')
   }
 
   selectFile(event: any) {
@@ -50,9 +57,32 @@ export class ParsingCarousel2Component implements OnInit {
     }
     this.state.moveSlots(action)
     this.renderDocument()
+
+    this.animateTransition(action)
   }
 
+  animateTransition(action: 'prev' | 'next') {
 
+    this.pagesEl.forEach(item => {
+
+      const classes = ['first', 'second', 'third', 'fourth', 'fifth']
+
+      const classIndex = classes.findIndex(e => e === item.nativeElement.className)
+
+      this.renderer.removeClass(item.nativeElement, classes[classIndex]);
+      const nextIndex = action === 'prev' ? classIndex + 1 : classIndex - 1;
+      this.renderer.addClass(
+        item.nativeElement,
+        nextIndex === classes.length
+          ? classes[0]
+          : nextIndex === -1
+          ? classes[classes.length - 1]
+          : classes[nextIndex]
+      );
+      
+    })
+
+  }
 
 
   renderDocument() {

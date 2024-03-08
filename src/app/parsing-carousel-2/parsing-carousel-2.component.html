@@ -11,11 +11,11 @@
     <img class="arrow" src="../assets/prev-button.svg" alt="<" (click)="go('prev')"
       [ngClass]="{'off': state.slots[1]==-1}">
     <div id="pages" class="pages">
-      <div class="page first"></div>
-      <div class="page second"></div>
-      <div class="page main"></div>
-      <div class="page second"></div>
-      <div class="page last"></div>
+      <div #page class="first"></div>
+      <div #page class="second"></div>
+      <div #page class="third"></div>
+      <div #page class="fourth"></div>
+      <div #page class="fifth"></div>
     </div>
     <img class="arrow" src="../assets/next-button.svg" alt=">" (click)="go('next')" [ngClass]="{'off': state.slots[3]==-1}">
   </div>
