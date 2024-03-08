@@ -68,9 +68,10 @@ export class ParsingDocumentsState {
     this.slots[2] = this.fileRanges[index].from;
     this.slots[1] = this.slots[2] - 1 < 0 ? -1 : this.slots[2] - 1
     this.slots[0] = this.slots[1] - 1 < 0 ? -1 : this.slots[1] - 1
-    this.slots[3] = this.slots[2] + 1 > this.numPages ? -1 : this.slots[2] + 1
-    this.slots[4] = this.slots[3] + 1 > this.numPages ? -1 : this.slots[3] + 1
+    this.slots[3] = this.slots[2] + 1 >= this.numPages ? -1 : this.slots[2] + 1
+    this.slots[4] = this.slots[2] + 2 >= this.numPages ? -1 : this.slots[3] + 1
     this.selectedIndex = index
+    console.log(this.slots)
   }
 
 
