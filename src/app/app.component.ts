@@ -7,4 +7,8 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'carousel';
+
+  go(action: 'prev'|'next') {
+    console.log(action)
+  }
 }

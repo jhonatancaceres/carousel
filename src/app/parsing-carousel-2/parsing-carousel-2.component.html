@@ -1,0 +1,22 @@
+<select (change)="selectFile($event)">
+  <option *ngFor="let file of state.files; let i=index" [value]="i" [selected]="i===state.selectedIndex">
+    {{file.fileName}}-{{i===state.selectedIndex}}</option>
+</select>
+<div class="file-selector">
+  <input #fileInput (change)="uploadFiles(fileInput)" type="file" accept="application/pdf" multiple />
+</div>
+
+<div class="container">
+  <div class="carousel">
+    <img class="arrow" src="../assets/prev-button.svg" alt="<" (click)="go('prev')"
+      [ngClass]="{'off': state.slots[1]==-1}">
+    <div id="pages" class="pages">
+      <div class="page first"></div>
+      <div class="page second"></div>
+      <div class="page main"></div>
+      <div class="page second"></div>
+      <div class="page last"></div>
+    </div>
+    <img class="arrow" src="../assets/next-button.svg" alt=">" (click)="go('next')" [ngClass]="{'off': state.slots[3]==-1}">
+  </div>
+</div>
