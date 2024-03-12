@@ -17,6 +17,7 @@ export class ParsingDocumentsState {
   slots = [-1, -1, -1, -1, -1]
   numPages = 0
   fileRanges: { [index: number]: { file: number, from: number, to: number, main: number } } = {}
+  animationIndex = 0
 
   get currentDocument() {
     return this.files[this.selectedIndex]
@@ -36,32 +37,35 @@ export class ParsingDocumentsState {
   }
 
   moveSlots(direction: 'prev' | 'next') {
-    this.slots.map((v, i) => {
-      if (direction === 'prev' && i) {
-        return this.slots[i - 1]
-      }
-      if (direction === 'prev') {
-        if (i) {
-          return this.slots[i - 1]
-        } else if (v === 0 || v === -1) {
-          return -1
-        }
-        return v - 1
-      } else {
-        if (i < (this.slots.length - 1)) {
-          return this.slots[i + 1]
-        } else if (v < (this.numPages - 1)) {
-          return v == -1 ? -1 : v + 1
-        }
-        return - 1
-      }
-    }).forEach((v, i) => this.slots[i] = v)
+    if (direction === 'next') {
+      const lastPage = (Math.max(...this.slots) || 0) + 1
+      this.slots[this.animationIndex] = lastPage >= this.numPages ? -1 : lastPage
+      this.animationIndex = this.animationIndex === this.slots.length - 1 ? 0 : this.animationIndex + 1
+    
+    } else {
+      const firstPage = Math.min(...this.slots.filter(n => n > -1))
+      this.animationIndex = this.animationIndex === 0 ? this.slots.length - 1 : this.animationIndex - 1
+      this.slots[this.animationIndex] = firstPage - 1
+      
+    }
 
     Object.values(this.fileRanges).forEach(range => {
       if (this.slots[2] >= range.from && this.slots[2] < range.to) {
         this.selectedIndex = range.file
       }
     })
+  }
+
+  isMovementPossible(direction: 'prev' | 'next') {
+    if (direction === 'prev') {
+      let indexToCheck = this.animationIndex + 1
+      if (indexToCheck > this.slots.length - 1) indexToCheck = indexToCheck - this.slots.length
+      return !(this.slots[indexToCheck] === -1)
+    } else {
+      let indexToCheck = this.animationIndex - 2
+      if (indexToCheck < 0) indexToCheck = this.slots.length + indexToCheck
+      return !(this.slots[indexToCheck] === -1)
+    }
   }
 
   moveSlotsToFileIndex(index: number) {
@@ -71,7 +75,7 @@ export class ParsingDocumentsState {
     this.slots[3] = this.slots[2] + 1 >= this.numPages ? -1 : this.slots[2] + 1
     this.slots[4] = this.slots[2] + 2 >= this.numPages ? -1 : this.slots[3] + 1
     this.selectedIndex = index
-    console.log(this.slots)
+    this.animationIndex = 0
   }
 
 

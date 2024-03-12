@@ -1,3 +1,8 @@
+// This mixin already exists in the main project
+@mixin smoothBoxShadow($strength: 0.05)
+  box-shadow: 0px 0.3px 0.8px rgba(0, 0, 0, 0.281 * $strength), 0px 0.7px 2px rgba(0, 0, 0, 0.404 * $strength), 0px 1.3px 3.8px rgba(0, 0, 0, 0.5 * $strength), 0px 2.2px 6.7px rgba(0, 0, 0, 0.596 * $strength), 0px 4.2px 12.5px rgba(0, 0, 0, 0.719 * $strength), 0px 10px 30px rgba(0, 0, 0, 1 * $strength)
+
+  
 .container
   margin: 0 auto
   border: 1px solid #ccc
@@ -28,7 +33,7 @@
           top: 0
           left: 0
           transition: transform 250ms ease-in-out, z-index 250ms ease-in-out
-          
+          @include smoothBoxShadow(0.07)
           img
             width: 100%
             height: 100%            
@@ -40,20 +45,17 @@
             object-fit: fill
             transition: transform 500ms ease-in-out 0s
           &.first
-            transform: translate(-240px, 25px) scale(0.8)
+            transform: translate(-280px, 25px) scale(0.9)
             z-index: 5
           &.second
-            transform: translate(-150px, 10px) scale(1.2)
+            transform: translate(-160px, 10px) scale(1.2)
             z-index: 10
           &.third
             transform: translate(0) scale(1.5)
             z-index: 15
           &.fourth
-            transform: translate(150px, 10px) scale(1.2)
+            transform: translate(160px, 10px) scale(1.2)
             z-index: 10
           &.fifth
-            transform: translate(240px, 25px) scale(0.8)
-            z-index: 5
-              
-            
-          
+            transform: translate(280px, 25px) scale(0.9)
+            z-index: 5   

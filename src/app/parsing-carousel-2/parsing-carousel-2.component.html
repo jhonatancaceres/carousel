@@ -8,8 +8,7 @@
 
 <div class="container">
   <div class="carousel">
-    <img class="arrow" src="../assets/prev-button.svg" alt="<" (click)="go('prev')"
-      [ngClass]="{'off': state.slots[1]==-1}">
+    <img class="arrow" src="../assets/prev-button.svg" alt="<" (click)="go('prev')" [ngClass]="{'off': !state.isMovementPossible('prev')}">
     <div id="pages" class="pages">
       <div #page class="first"></div>
       <div #page class="second"></div>
@@ -17,6 +16,6 @@
       <div #page class="fourth"></div>
       <div #page class="fifth"></div>
     </div>
-    <img class="arrow" src="../assets/next-button.svg" alt=">" (click)="go('next')" [ngClass]="{'off': state.slots[3]==-1}">
+    <img class="arrow" src="../assets/next-button.svg" alt=">" (click)="go('next')" [ngClass]="{'off': !state.isMovementPossible('next')}">
   </div>
 </div>

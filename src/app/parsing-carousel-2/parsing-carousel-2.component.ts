@@ -28,6 +28,7 @@ export class ParsingCarousel2Component implements OnInit {
   selectFile(event: any) {
     const index = Number(event?.target.value)
     if (this.state.fileRanges[index]) {
+      this.resetTransitions()
       this.state.moveSlotsToFileIndex(Number(event?.target.value))
       this.renderDocument()
     }
@@ -43,6 +44,7 @@ export class ParsingCarousel2Component implements OnInit {
 
     this.pdfLibService.uploadDocuments(filesTemp).then(files => {
       this.state.resetSlots(files)
+      this.resetTransitions()
       this.renderDocument()
 
       this.isLoadingDocument = false
@@ -52,11 +54,15 @@ export class ParsingCarousel2Component implements OnInit {
   }
 
   go(action: 'prev' | 'next') {
-    if (action === 'prev' && this.state.slots[1] == -1 || action === 'next' && this.state.slots[3] == -1) {      
+    if (!this.state.isMovementPossible(action)) {      
       return
-    }
+    } 
     this.state.moveSlots(action)
-    this.renderDocument()
+
+    // Timeout for the image rendering so it happens behind the animation
+    setTimeout(() => {
+      this.renderDocument()
+    }, 80)
 
     this.animateTransition(action)
   }
@@ -66,7 +72,6 @@ export class ParsingCarousel2Component implements OnInit {
     this.pagesEl.forEach(item => {
 
       const classes = ['first', 'second', 'third', 'fourth', 'fifth']
-
       const classIndex = classes.findIndex(e => e === item.nativeElement.className)
 
       this.renderer.removeClass(item.nativeElement, classes[classIndex]);
@@ -78,12 +83,19 @@ export class ParsingCarousel2Component implements OnInit {
           : nextIndex === -1
           ? classes[classes.length - 1]
           : classes[nextIndex]
-      );
-      
+      )
     })
-
   }
 
+  resetTransitions() {
+    const classes = ['first', 'second', 'third', 'fourth', 'fifth']
+    for (let index = 0; index < this.pagesEl.length; index++) {
+      const element = this.pagesEl.get(index)
+      if (element) {
+        element.nativeElement.classList = [classes[index]]
+      }
+    }
+  }
 
   renderDocument() {
     this.state.slots.forEach((v, i) => {
